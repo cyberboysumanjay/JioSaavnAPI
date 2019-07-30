@@ -9,4 +9,5 @@ requests-toolbelt
 pyDes
 bs4
 lxml
+logger
 gevent
