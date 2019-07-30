@@ -1,0 +1,11 @@
+Flask
+gunicorn
+httplib2
+requests
+beautifulsoup4
+clint
+pycryptodome
+requests-toolbelt
+pyDes
+bs4
+lxml
