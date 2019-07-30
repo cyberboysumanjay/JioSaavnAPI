@@ -9,3 +9,4 @@ requests-toolbelt
 pyDes
 bs4
 lxml
+gevent
