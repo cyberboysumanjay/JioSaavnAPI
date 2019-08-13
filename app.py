@@ -28,18 +28,18 @@ def result():
         elif '/album/' in query:
             id=saavn.AlbumId(query,proxies)
             songs=saavn.getAlbum(id,proxies)
-            for song in songs:
-                song['image_url']=saavn.fix_image_url(song['image_url'])
-                song['title']=saavn.fix_title(song['title'])
-                song['url']=saavn.decrypt_url(song['url'])
+            for song in songs["songs"]:
+                song['image']=saavn.fix_image_url(song['image'])
+                song['song']=saavn.fix_title(song['song'])
+                song['encrypted_media_path']=saavn.decrypt_url(song['encrypted_media_path'])
             return jsonify(songs)
         elif '/playlist/' or '/featured/' in query:
             id=saavn.getListId(query,proxies)
             songs=saavn.getPlayList(id,proxies)
-            for song in songs:
-                song['image_url']=saavn.fix_image_url(song['image_url'])
-                song['title']=saavn.fix_title(song['title'])
-                song['url']=saavn.decrypt_url(song['url'])
+            for song in songs["songs"]:
+                song['image']=saavn.fix_image_url(song['image'])
+                song['song']=saavn.fix_title(song['song'])
+                song['encrypted_media_path']=saavn.decrypt_url(song['encrypted_media_path'])
             return jsonify(songs)
         else:
             songs=saavn.get_songs(query,proxies)
@@ -51,6 +51,7 @@ def result():
         raise AssertionError
     except Exception as e:
         errors=[]
+        print_exc()
         error = {"album": "NULL",
                 "album_url": "NULL",
                 "autoplay": "NULL",
