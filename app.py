@@ -14,18 +14,29 @@ def home():
 def result():
     data=''
     query=request.args.get('query')
-    #link='https://www.jiosaavn.com/song/hawa-banke/JSw6aUYIRX8'
-    if not query.startswith('http'):
-        query = "https://www.jiosaavn.com/search/"+query
     proxies=saavn.fate_proxy()
+    if not query.startswith('https://www.jiosaavn.com'):
+        query = "https://www.jiosaavn.com/search/"+query
+
     try:
+        print("All is well with query",query)
         if '/song/' in query:
+            print("Song")
             song=saavn.get_songs(query,proxies)[0]
             song['image_url']=saavn.fix_image_url(song['image_url'])
             song['title']=saavn.fix_title(song['title'])
             song['url']=saavn.decrypt_url(song['url'])
             return jsonify(song)
+        elif '/search/' in query:
+            print("Text Query Detected")
+            songs=saavn.get_songs(query,proxies)
+            for song in songs:
+                song['image_url']=saavn.fix_image_url(song['image_url'])
+                song['title']=saavn.fix_title(song['title'])
+                song['url']=saavn.decrypt_url(song['url'])
+            return jsonify(songs)
         elif '/album/' in query:
+            print("Album")
             id=saavn.AlbumId(query,proxies)
             songs=saavn.getAlbum(id,proxies)
             for song in songs["songs"]:
@@ -34,20 +45,16 @@ def result():
                 song['encrypted_media_path']=saavn.decrypt_url(song['encrypted_media_path'])
             return jsonify(songs)
         elif '/playlist/' or '/featured/' in query:
+            print("Playlist")
             id=saavn.getListId(query,proxies)
             songs=saavn.getPlayList(id,proxies)
-            for song in songs["songs"]:
+            print(songs)
+            for song in songs['songs']:
                 song['image']=saavn.fix_image_url(song['image'])
                 song['song']=saavn.fix_title(song['song'])
                 song['encrypted_media_path']=saavn.decrypt_url(song['encrypted_media_path'])
             return jsonify(songs)
-        else:
-            songs=saavn.get_songs(query,proxies)
-            for song in songs:
-                song['image_url']=saavn.fix_image_url(song['image_url'])
-                song['title']=saavn.fix_title(song['title'])
-                song['url']=saavn.decrypt_url(song['url'])
-            return jsonify(songs)
+
         raise AssertionError
     except Exception as e:
         errors=[]
