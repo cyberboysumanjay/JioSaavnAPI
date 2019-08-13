@@ -46,7 +46,7 @@ def fate_proxy():
       proxy.append(str(p['host'])+':'+str(p['port']))
     return proxy
 
-def get_songs(query):
+def get_songs(query,proxies):
     if not query.startswith('https://www.jiosaavn.com'):
         url = "https://www.jiosaavn.com/search/"+query
         flag="link"
@@ -54,7 +54,6 @@ def get_songs(query):
         url=query
         flag="query"
     songs=[]
-    proxies=fate_proxy()
     for test_proxy in proxies:
         try:
             print("Testing with proxy",test_proxy)
@@ -80,7 +79,7 @@ def get_songs(query):
                 return songs
     return songs
 
-def getAlbum(albumId):
+def getAlbum(albumId,proxies):
     songs_json = []
     try:
         response = requests.get('https://www.saavn.com/api.php?_format=json&__call=content.getAlbumDetails&albumid={0}'.format(albumId),verify=False,timeout=4)
@@ -90,7 +89,6 @@ def getAlbum(albumId):
            return songs_json
     except Exception as e:
        pass
-
     for p in proxies:
         try:
            response = requests.get(
@@ -105,10 +103,9 @@ def getAlbum(albumId):
 
     return songs_json
 
-def AlbumId(input_url):
+def AlbumId(input_url,proxies):
     try:
         proxi, headers = setProxy()
-        proxies=fate_proxy()
         for p in proxies:
             try:
                 res = requests.get(input_url,proxies={"http": p, "https": p}, headers=headers,timeout=4)
@@ -144,7 +141,7 @@ def setProxy():
     }
     return proxies, headers
 
-def getPlayList(listId):
+def getPlayList(listId,proxies):
     songs_json = []
     try:
         response = requests.get('https://www.jiosaavn.com/api.php?listid={0}&_format=json&__call=playlist.getDetails'.format(listId), verify=False)
@@ -165,10 +162,7 @@ def getPlayList(listId):
                 pass
     return songs_json
 
-
-
-
-def getListId(input_url):
+def getListId(input_url,proxies):
     p, headers = setProxy()
     try:
         res = requests.get(input_url, headers=headers)
@@ -198,7 +192,7 @@ def getListId(input_url):
     except Exception as e:
         print('Unable to scrape Playlist ID',e)
 
-def getSongsJSON(listId):
+def getSongsJSON(listId,proxies):
     url='https://www.jiosaavn.com/api.php?listid='+str(listId)+'&_format=json&__call=playlist.getDetails'
     response_json=requests.get(url).text
     struct = {}
