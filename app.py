@@ -48,7 +48,7 @@ def result():
             print("Playlist")
             id=saavn.getListId(query,proxies)
             songs=saavn.getPlayList(id,proxies)
-            print(songs)
+            #print(songs)
             for song in songs['songs']:
                 song['image']=saavn.fix_image_url(song['image'])
                 song['song']=saavn.fix_title(song['song'])

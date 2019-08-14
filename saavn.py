@@ -54,29 +54,46 @@ def get_songs(query,proxies):
         url=query
         flag="query"
     songs=[]
-    for test_proxy in proxies:
-        try:
-            print("Testing with proxy",test_proxy)
-            res = requests.get(url, headers=headers, data=[('bitrate', '320')],proxies={"http": test_proxy, "https": test_proxy},timeout=5)
-            soup = BeautifulSoup(res.text,"lxml")
-            all_song_divs = soup.find_all('div',{"class":"hide song-json"})
-            for i in all_song_divs:
+    try:
+        res = requests.get(url, headers=headers, data=[('bitrate', '320')])
+        soup = BeautifulSoup(res.text,"lxml")
+        all_song_divs = soup.find_all('div',{"class":"hide song-json"})
+        for i in all_song_divs:
+            try:
                 try:
+                    song_info= json.loads(i.text)
+                    songs.append(song_info)
+                except:
+                    song_info = json_decoder.decode(i.text)
+                    songs.append(song_info)
+            except Exception as e:
+                continue
+        if len(songs)>0:
+            return songs
+    except Exception as e:
+        for test_proxy in proxies:
+            try:
+                print("Testing with proxy",test_proxy)
+                res = requests.get(url, headers=headers, data=[('bitrate', '320')],proxies={"http": test_proxy, "https": test_proxy},timeout=5)
+                soup = BeautifulSoup(res.text,"lxml")
+                all_song_divs = soup.find_all('div',{"class":"hide song-json"})
+                for i in all_song_divs:
                     try:
-                        song_info= json.loads(i.text)
-                        songs.append(song_info)
-                    except:
-                        song_info = json_decoder.decode(i.text)
-                        songs.append(song_info)
-                except Exception as e:
-                    #print_exc()
-                    continue
-        except Exception as e:
-            #print_exc()
-            continue
-        finally:
-            if (len(songs)>0):
-                return songs
+                        try:
+                            song_info= json.loads(i.text)
+                            songs.append(song_info)
+                        except:
+                            song_info = json_decoder.decode(i.text)
+                            songs.append(song_info)
+                    except Exception as e:
+                        #print_exc()
+                        continue
+            except Exception as e:
+                #print_exc()
+                continue
+            finally:
+                if (len(songs)>0):
+                    return songs
     return songs
 
 def getAlbum(albumId,proxies):
@@ -106,14 +123,16 @@ def getAlbum(albumId,proxies):
 def AlbumId(input_url,proxies):
     try:
         proxi, headers = setProxy()
-        for p in proxies:
-            try:
-                res = requests.get(input_url,proxies={"http": p, "https": p}, headers=headers,timeout=4)
-                if 'internal error' in res.text:
-                    continue
-                break
-            except Exception as e:
-                print("Skipped this proxy")
+        res = requests.get(input_url, headers=headers)
+        if 'internal error' in res.text:
+            for p in proxies:
+                try:
+                    res = requests.get(input_url,proxies={"http": p, "https": p}, headers=headers,timeout=4)
+                    if 'internal error' in res.text:
+                        continue
+                    break
+                except Exception as e:
+                    print("Skipped this proxy")
     except Exception as e:
         logger.error('Error accessing website error: ' + e)
 
@@ -167,16 +186,16 @@ def getListId(input_url,proxies):
     try:
         res = requests.get(input_url, headers=headers)
         if 'internal error' in res.text:
-            pass
-        proxies=fate_proxy()
-        for proxy in proxies:
-            try:
-                res = requests.get(input_url, proxies={"http": proxy, "https": proxy}, headers=headers)
-                if 'internal error' in res.text:
-                    continue
-                break
-            except Exception as e:
-                print("Skipped this proxy")
+
+            proxies=fate_proxy()
+            for proxy in proxies:
+                try:
+                    res = requests.get(input_url, proxies={"http": proxy, "https": proxy}, headers=headers)
+                    if 'internal error' in res.text:
+                        continue
+                    break
+                except Exception as e:
+                    print("Skipped this proxy")
         #res = requests.get(input_url, proxies={"http": proxy, "https": proxy}, headers=headers)
         #res = requests.get(input_url)
     except Exception as e:
