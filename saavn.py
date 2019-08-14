@@ -180,7 +180,7 @@ def getListId(input_url,proxies):
         #res = requests.get(input_url, proxies={"http": proxy, "https": proxy}, headers=headers)
         #res = requests.get(input_url)
     except Exception as e:
-        logger.error('Error accessing website error: ' + e)
+        print_exc()
 
     soup = BeautifulSoup(res.text, "html.parser")
     #print(soup)
