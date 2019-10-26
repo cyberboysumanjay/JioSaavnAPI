@@ -16,9 +16,10 @@ import sys
 import ast
 import urllib3.request
 from traceback import print_exc
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
 import subprocess
 import re
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 des_cipher = des(b"38346591", ECB, b"\0\0\0\0\0\0\0\0" , pad=None, padmode=PAD_PKCS5)
 base_url = 'http://h.saavncdn.com'
@@ -165,16 +166,18 @@ def getPlayList(listId,proxies):
     try:
         response = requests.get('https://www.jiosaavn.com/api.php?listid={0}&_format=json&__call=playlist.getDetails'.format(listId), verify=False)
         if response.status_code == 200:
-            songs_json = list(filter(lambda x: x.startswith("{"), response.text.splitlines()))[0]
+            response_text=(response.text.splitlines())
+            songs_json = list(filter(lambda x: x.endswith("}"), response_text))[0]
             songs_json = json.loads(songs_json)
         return songs_json
     except Exception as e:
+        print(e)
         proxies=fate_proxy()
         for proxy in proxies:
             try:
                 response = requests.get('https://www.jiosaavn.com/api.php?listid={0}&_format=json&__call=playlist.getDetails'.format(listId), verify=False,proxies={'http':proxy,'https': proxy})
                 if response.status_code == 200:
-                    songs_json = list(filter(lambda x: x.startswith("{"), response.text.splitlines()))[0]
+                    songs_json = list(filter(lambda x: x.endswith("}"), response.text.splitlines()))[0]
                     songs_json = json.loads(songs_json)
                 return songs_json
             except Exception:
@@ -186,7 +189,6 @@ def getListId(input_url,proxies):
     try:
         res = requests.get(input_url, headers=headers)
         if 'internal error' in res.text:
-
             proxies=fate_proxy()
             for proxy in proxies:
                 try:
