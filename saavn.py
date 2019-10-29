@@ -65,9 +65,19 @@ def get_songs(query,proxies):
                     song_info= json.loads(i.text)
                     songs.append(song_info)
                 except:
-                    song_info = json_decoder.decode(i.text)
-                    songs.append(song_info)
+                    esc_text = re.sub(r'.\(\bFrom .*?"\)',"",str(i.text))
+                    try:
+                        song_info = json_decoder.decode(esc_text)
+                        songs.append(song_info)
+                    except:
+                        try:
+                            song_info= json.loads(esc_text)
+                            songs.append(song_info)
+                        except:
+                            print(esc_text)
+
             except Exception as e:
+                print_exc()
                 continue
         if len(songs)>0:
             return songs

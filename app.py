@@ -48,46 +48,16 @@ def result():
             print("Playlist")
             id=saavn.getListId(query,proxies)
             songs=saavn.getPlayList(id,proxies)
-            #print(songs)
             for song in songs['songs']:
                 song['image']=saavn.fix_image_url(song['image'])
                 song['song']=saavn.fix_title(song['song'])
                 song['encrypted_media_path']=saavn.decrypt_url(song['encrypted_media_path'])
             return jsonify(songs)
-
         raise AssertionError
     except Exception as e:
         errors=[]
         print_exc()
-        error = {"album": "NULL",
-                "album_url": "NULL",
-                "autoplay": "NULL",
-                "duration": "NULL",
-                "e_songid": "NULL",
-                "has_rbt": "NULL",
-                "image_url":"NULL",
-                "label": "NULL",
-                "label_url":"NULL",
-                "language": "NULL",
-                "liked": "NULL",
-                "map":"NULL",
-                "music": "NULL",
-                "origin": "NULL",
-                "origin_val": "NULL",
-                "page": "NULL",
-                "pass_album_ctx": "NULL",
-                "perma_url": "NULL",
-                "publish_to_fb": "NULL",
-                "singers": "NULL",
-                "songid": "NULL",
-                "starred":"NULL",
-                "starring": "NULL",
-                "streaming_source":"NULL",
-                "tiny_url": "NULL",
-                "title": "NULL",
-                "twitter_url": "NULL",
-                "url": "NULL",
-                "year": "NULL",
+        error = {
                 "status":str(e)
             }
         errors.append(error)
