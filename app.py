@@ -26,6 +26,7 @@ def result():
             song['image_url']=saavn.fix_image_url(song['image_url'])
             song['title']=saavn.fix_title(song['title'])
             song['url']=saavn.decrypt_url(song['url'])
+            song['album']=fix_title(song['album'])
             return jsonify(song)
         elif '/search/' in query:
             print("Text Query Detected")
@@ -34,6 +35,7 @@ def result():
                 song['image_url']=saavn.fix_image_url(song['image_url'])
                 song['title']=saavn.fix_title(song['title'])
                 song['url']=saavn.decrypt_url(song['url'])
+                song['album']=fix_title(song['album'])
             return jsonify(songs)
         elif '/album/' in query:
             print("Album")
@@ -42,6 +44,7 @@ def result():
             for song in songs["songs"]:
                 song['image']=saavn.fix_image_url(song['image'])
                 song['song']=saavn.fix_title(song['song'])
+                song['name']=fix_title(song['name'])
                 song['encrypted_media_path']=saavn.decrypt_url(song['encrypted_media_path'])
             return jsonify(songs)
         elif '/playlist/' or '/featured/' in query:
