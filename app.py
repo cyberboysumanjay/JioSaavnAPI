@@ -44,7 +44,7 @@ def result():
             for song in songs["songs"]:
                 song['image']=saavn.fix_image_url(song['image'])
                 song['song']=saavn.fix_title(song['song'])
-                song['name']=saavn.fix_title(song['name'])
+                song['album']=saavn.fix_title(song['album'])
                 song['encrypted_media_path']=saavn.decrypt_url(song['encrypted_media_path'])
             return jsonify(songs)
         elif '/playlist/' or '/featured/' in query:
