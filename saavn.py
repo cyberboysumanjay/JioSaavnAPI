@@ -239,7 +239,7 @@ def getSongsJSON(listId,proxies):
 def decrypt_url(url):
     enc_url = base64.b64decode(url.strip())
     dec_url = des_cipher.decrypt(enc_url,padmode=PAD_PKCS5).decode('utf-8')
-    dec_url = base_url + dec_url[10:] + '.mp3'
+    dec_url = base_url + dec_url[10:] + '_320.mp3'
     return dec_url
 
 def fix_title(title):
