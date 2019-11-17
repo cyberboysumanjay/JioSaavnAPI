@@ -8,7 +8,7 @@ app.secret_key = 'thankyoutonystark#weloveyou3000'
 
 @app.route('/')
 def home():
-   return "Thanks for testing Saavn API. To get started head up to my GitHub for documentation."
+   return redirect("https://cyberboysumanjay.github.io/JioSaavnAPI/")
 
 @app.route('/result/', methods=['GET', 'POST'])
 def result():
