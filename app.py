@@ -27,6 +27,7 @@ def result():
             song['title']=saavn.fix_title(song['title'])
             song['url']=saavn.decrypt_url(song['url'])
             song['album']=saavn.fix_title(song['album'])
+            song['lyrics']=saavn.get_lyrics(query)
             return jsonify(song)
         elif '/search/' in query:
             print("Text Query Detected")
@@ -36,6 +37,7 @@ def result():
                 song['title']=saavn.fix_title(song['title'])
                 song['url']=saavn.decrypt_url(song['url'])
                 song['album']=saavn.fix_title(song['album'])
+                song['lyrics']=saavn.get_lyrics(song['tiny_url'])
             return jsonify(songs)
         elif '/album/' in query:
             print("Album")
@@ -45,6 +47,7 @@ def result():
                 song['image']=saavn.fix_image_url(song['image'])
                 song['song']=saavn.fix_title(song['song'])
                 song['album']=saavn.fix_title(song['album'])
+                song['lyrics']=saavn.get_lyrics(song['perma_url'])
                 song['encrypted_media_path']=saavn.decrypt_url(song['encrypted_media_path'])
             return jsonify(songs)
         elif '/playlist/' or '/featured/' in query:
@@ -54,6 +57,7 @@ def result():
             for song in songs['songs']:
                 song['image']=saavn.fix_image_url(song['image'])
                 song['song']=saavn.fix_title(song['song'])
+                song['lyrics']=saavn.get_lyrics(song['perma_url'])
                 song['encrypted_media_path']=saavn.decrypt_url(song['encrypted_media_path'])
             return jsonify(songs)
         raise AssertionError

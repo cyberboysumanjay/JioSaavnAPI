@@ -250,3 +250,18 @@ def fix_image_url(url):
     url=str(url)
     url=url.replace('150x150','500x500')
     return url
+
+def get_lyrics(link):
+    try:
+        if '/song/' in link:
+            link=link.replace("/song/",'/lyrics/')
+            source=requests.get(link).text
+            soup=BeautifulSoup(source,'lxml')
+            res=soup.find('p',class_='lyrics')
+            lyrics=str(res).replace("<br/>","\n")
+            lyrics=lyrics.replace('<p class="lyrics"> ','')
+            lyrics=lyrics.replace("</p>",'')
+            return (lyrics)
+    except Exception:
+        print_exc()
+        return
