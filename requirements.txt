@@ -11,3 +11,4 @@ bs4
 lxml
 logger
 gevent
+flask-cors
