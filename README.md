@@ -8,6 +8,8 @@
 
 ![GitHub followers](https://img.shields.io/github/followers/cyberboysumanjay.svg?style=social&label=Follow)
 
+[![Telegram Channel](https://img.shields.io/badge/Telegram-Channel-orange)](https://t.me/sjprojects)
+
 #### JioSaavn API written in Python using Flask  
 
  ---
