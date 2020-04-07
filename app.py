@@ -3,8 +3,11 @@ import time
 from flask import  jsonify,json
 import saavn
 from traceback import print_exc
+from flask_cors import CORS
+
 app = Flask(__name__)
 app.secret_key = 'thankyoutonystark#weloveyou3000'
+CORS(app)
 
 @app.route('/')
 def home():
