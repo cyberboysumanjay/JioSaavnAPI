@@ -21,7 +21,7 @@ def result():
     lyrics = False
     query = request.args.get('query')
     lyrics_ = request.args.get('lyrics')
-    if lyrics_:
+    if lyrics_ and lyrics_.lower()!='false':
         lyrics = True
 
     if not query.startswith('https://www.jiosaavn.com'):
