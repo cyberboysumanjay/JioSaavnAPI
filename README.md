@@ -91,6 +91,10 @@ http://127.0.0.1:5000/result/?query=<insert-jiosaavn-link-or-query-here>&lyrics=
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/cyberboysumanjay/JioSaavnAPI/tree/master)
 
 **Note:** Heroku gives US/Europe servers which won't be able to fetch all songs flawlessly. Use any Indian VPS for fetching accurate results.
+## Made using this API :heart:
+##### [Musify](https://kutt.it/songdlapp) - Android App
+##### [@songdl_bot](https://t.me/songdl_bot) - Song Downloader Bot on Telegram
+##### [Site[Beta]](https://jiosaavn.netlify.app/) - Website made by [Praveen Bhadoo](https://github.com/ParveenBhadooOfficial)
 
 #### Star the Repo in case you liked it :)
 
