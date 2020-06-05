@@ -148,18 +148,19 @@ def getSongsJSON(listId):
 def decrypt_url(url):
     enc_url = base64.b64decode(url.strip())
     dec_url = des_cipher.decrypt(enc_url, padmode=PAD_PKCS5).decode('utf-8')
-    dec_url = dec_url.replace("_96.mp4", "_320.mp4")
+    dec_url = dec_url.replace("_96.mp4", "_320.mp3")
+    dec_url = dec_url.replace("http://aac.saavncdn.com","http://h.saavncdn.com")
     try:
         r = requests.head(dec_url)
         if r.status_code == 200 or r.status_code == 302:
             return dec_url
         else:
-            dec_url = dec_url.replace('_320.mp4', '_160.mp4')
+            dec_url = dec_url.replace('_320.mp3', '_160.mp3')
             r = requests.head(dec_url)
             if r.status_code == 200 or r.status_code == 302:
                 return dec_url
             else:
-                dec_url = dec_url.replace("_160.mp4", "_96.mp4")
+                dec_url = dec_url.replace("_160.mp3", "_96.mp3")
                 if r.status_code == 200 or r.status_code == 302:
                     return dec_url
     except Exception as e:
