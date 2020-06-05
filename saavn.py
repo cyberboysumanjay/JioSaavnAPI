@@ -14,7 +14,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 des_cipher = des(b"38346591", ECB, b"\0\0\0\0\0\0\0\0",
                  pad=None, padmode=PAD_PKCS5)
-base_url = 'https://h.saavncdn.com'
+base_url = 'http://h.saavncdn.com'
 json_decoder = json.JSONDecoder()
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0'
@@ -148,15 +148,23 @@ def getSongsJSON(listId):
 def decrypt_url(url):
     enc_url = base64.b64decode(url.strip())
     dec_url = des_cipher.decrypt(enc_url, padmode=PAD_PKCS5).decode('utf-8')
-    dec_url = base_url + dec_url[10:] + '_320.mp3'
+    dec_url = dec_url.replace("_96.mp4", "_320.mp4")
     try:
         r = requests.head(dec_url)
-        if str(r.status_code) != '200':
-            dec_url = dec_url.replace('_320.mp3', '.mp3')
+        if r.status_code == 200 or r.status_code == 302:
+            return dec_url
+        else:
+            dec_url = dec_url.replace('_320.mp4', '_160.mp4')
+            r = requests.head(dec_url)
+            if r.status_code == 200 or r.status_code == 302:
+                return dec_url
+            else:
+                dec_url = dec_url.replace("_160.mp4", "_96.mp4")
+                if r.status_code == 200 or r.status_code == 302:
+                    return dec_url
     except Exception as e:
-        print("Caught URL", dec_url, "Error: ", e)
         return None
-    return dec_url
+    return None
 
 
 def fix_title(title):
