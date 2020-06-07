@@ -149,7 +149,7 @@ def decrypt_url(url):
     enc_url = base64.b64decode(url.strip())
     dec_url = des_cipher.decrypt(enc_url, padmode=PAD_PKCS5).decode('utf-8')
     dec_url = dec_url.replace("_96.mp4", "_320.mp3")
-    dec_url = dec_url.replace("http://aac.saavncdn.com","http://h.saavncdn.com")
+    dec_url = dec_url.replace("http://aac.saavncdn.com","https://h.saavncdn.com")
     try:
         r = requests.head(dec_url)
         if r.status_code == 200 or r.status_code == 302:
