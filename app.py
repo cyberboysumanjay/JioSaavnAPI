@@ -17,74 +17,76 @@ def home():
 
 @app.route('/result/', methods=['GET', 'POST'])
 def result():
-    data = ''
     lyrics = False
+    false = False
+    true = True
     query = request.args.get('query')
     lyrics_ = request.args.get('lyrics')
     if lyrics_ and lyrics_.lower()!='false':
         lyrics = True
 
-    if not query.startswith('https://www.jiosaavn.com'):
-        query = "https://www.jiosaavn.com/search/"+query
-
+    if 'saavn' not in query:
+        return jsonify(saavn.search_from_query(query))
+    print("Checking Lyrics Tag:",lyrics)
     try:
-        print("Query received: ", query)
         if '/song/' in query:
             print("Song")
-            song = saavn.get_songs(query)[0]
-            song['image_url'] = saavn.fix_image_url(song['image_url'])
-            song['title'] = saavn.fix_title(song['title'])
-            song['url'] = saavn.decrypt_url(song['url'])
-            song['album'] = saavn.fix_title(song['album'])
+            song = saavn.get_song_id(query)
+            song = (saavn.search_from_song_id(song))
             if lyrics:
-                song['lyrics'] = saavn.get_lyrics(query)
+                if song['has_lyrics']:
+                    song['lyrics'] = saavn.get_lyrics(song['perma_url'])
+                else:
+                    song['lyrics'] = None
+            song['status'] = True
+            song['media_url'] = saavn.check_media_url(song['media_url'])
             return jsonify(song)
-        elif '/search/' in query:
-            print("Text Query Detected")
-            songs = saavn.get_songs(query)
-            for song in songs:
-                song['image_url'] = saavn.fix_image_url(song['image_url'])
-                song['title'] = saavn.fix_title(song['title'])
-                song['url'] = saavn.decrypt_url(song['url'])
-                song['album'] = saavn.fix_title(song['album'])
-                if lyrics:
-                    song['lyrics'] = saavn.get_lyrics(song['tiny_url'])
-            return jsonify(songs)
+            '''
+            elif '/search/' in query:
+                songs = saavn.get_songs(query)
+                for song in songs:
+                    song['image_url'] = saavn.fix_image_url(song['image_url'])
+                    song['title'] = saavn.fix_title(song['title'])
+                    song['url'] = saavn.decrypt_url(song['url'])
+                    song['album'] = saavn.fix_title(song['album'])
+                    if lyrics:
+                        song['lyrics'] = saavn.get_lyrics(song['tiny_url'])
+                return jsonify(songs)
+            '''
         elif '/album/' in query:
             print("Album")
             id = saavn.AlbumId(query)
             songs = saavn.getAlbum(id)
-            for song in songs["songs"]:
-                song['image'] = saavn.fix_image_url(song['image'])
-                song['song'] = saavn.fix_title(song['song'])
-                song['album'] = saavn.fix_title(song['album'])
+            for song in songs['songs']:
+                song['media_url'] = saavn.check_media_url(song['media_url'])
                 if lyrics:
-                    song['lyrics'] = saavn.get_lyrics(song['perma_url'])
-                song['encrypted_media_path'] = saavn.decrypt_url(
-                    song['encrypted_media_path'])
+                    if song['has_lyrics']:
+                        song['lyrics'] = saavn.get_lyrics(song['perma_url'])
+                    else:
+                        song['lyrics'] = None
+            songs['status'] = True
             return jsonify(songs)
         elif '/playlist/' or '/featured/' in query:
             print("Playlist")
             id = saavn.getListId(query)
             songs = saavn.getPlayList(id)
             for song in songs['songs']:
-                song['image'] = saavn.fix_image_url(song['image'])
-                song['song'] = saavn.fix_title(song['song'])
+                song['media_url'] = saavn.check_media_url(song['media_url'])
                 if lyrics:
-                    song['lyrics'] = saavn.get_lyrics(song['perma_url'])
-                song['encrypted_media_path'] = saavn.decrypt_url(
-                    song['encrypted_media_path'])
+                    if song['has_lyrics']:
+                        song['lyrics'] = saavn.get_lyrics(song['perma_url'])
+                    else:
+                        song['lyrics'] = None
+            songs['status'] = True
             return jsonify(songs)
-        raise AssertionError
     except Exception as e:
-        errors = []
         print_exc()
         error = {
-            "status": str(e)
+            "status": True,
+            "error":str(e)
         }
-        errors.append(error)
-        return jsonify(errors)
-    return data
+        return jsonify(error)
+    return None
 
 
 if __name__ == '__main__':
