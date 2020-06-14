@@ -60,7 +60,7 @@ def search_from_query(query):
                 songs_json[song_id]['media_preview_url'])
         except KeyError:
             songs_json[song_id]['media_url'] = decrypt_url(
-                songs_json[song_id]['media_url'])
+                songs_json[song_id]['encrypted_media_url'])
         songs_json[song_id]['image'] = fix_image_url(
             songs_json[song_id]['image'])
         songs_json[song_id]['song'] = fix_title(songs_json[song_id]['song'])
