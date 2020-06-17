@@ -66,6 +66,7 @@ def search_from_query(query):
         songs_json[song_id]['song'] = fix_title(songs_json[song_id]['song'])
 
         songs_json[song_id]['album'] = fix_title(songs_json[song_id]['album'])
+        songs_json[song_id]['media_url'] = check_media_url(songs_json[song_id]['media_url'])
         songs.append(songs_json[song_id])
     return songs
 
