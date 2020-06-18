@@ -83,48 +83,8 @@ def get_song_id(query):
     songs = []
     try:
         res = requests.get(url, headers=headers, data=[('bitrate', '320')])
-        soup = BeautifulSoup(res.text, "lxml")
-        all_song_divs = soup.find_all('div', {"class": "hide song-json"})
-        song_divs = all_song_divs[0]
-        try:
-            song_info = json.loads(song_divs.text)
-            return song_info['songid']
-        except:
-            esc_text = re.sub(r'.\(\bFrom .*?"\)', "", str(song_divs.text))
-            try:
-                song_info = json_decoder.decode(esc_text)
-                return song_info['songid']
-            except:
-                try:
-                    song_info = json.loads(esc_text)
-                    return song_info['songid']
-                except:
-                    print(esc_text)
-        return None
-
-        '''
-        for i in all_song_divs:
-            try:
-                try:
-                    song_info = json.loads(i.text)
-                    songs.append(song_info)
-                except:
-                    esc_text = re.sub(r'.\(\bFrom .*?"\)', "", str(i.text))
-                    try:
-                        song_info = json_decoder.decode(esc_text)
-                        songs.append(song_info)
-                    except:
-                        try:
-                            song_info = json.loads(esc_text)
-                            songs.append(song_info)
-                        except:
-                            print(esc_text)
-            except Exception as e:
-                print_exc()
-                continue
-        if len(songs) > 0:
-            return songs
-        '''
+        id = res.text.split('"song":{"type":"')[1].split('","image":')[0].split('"id":"')[-1]
+        return id
     except Exception as e:
         print_exc()
     return None
@@ -163,16 +123,9 @@ def AlbumId(input_url):
         res = requests.get(input_url, headers=headers)
         if 'internal error' in res.text:
             return None
-    except Exception:
-        print_exc()
-        return None
-    soup = BeautifulSoup(res.text, "html.parser")
-    try:
-        getAlbumID = soup.select(".play")[0]["onclick"]
-        getAlbumID = ast.literal_eval(
-            re.search("\[(.*?)\]", getAlbumID).group())[1]
-        if getAlbumID is not None:
-            return(getAlbumID)
+        else:
+            id = res.text.split('"album_id":"')[1].split('"')[0]
+            return id
     except Exception:
         print_exc()
         return None
@@ -217,16 +170,8 @@ def getPlayList(listId):
 
 def getListId(input_url):
     headers = setProxy()
-    res = requests.get(input_url, headers=headers)
-    soup = BeautifulSoup(res.text, "html.parser")
-
-    try:
-        getPlayListID = soup.select(".flip-layout")[0]["data-listid"]
-        return getPlayListID
-    except Exception:
-        getPlayListID = res.text.split('data-listid="')[1]
-        getPlayListID = getPlayListID.split('">')[0]
-        return getPlayListID
+    res = requests.get(input_url, headers=headers).text
+    return res.split('"type":"playlist","id":"')[1].split('"')[0]
 
 
 def getSongsJSON(listId):
@@ -267,9 +212,9 @@ def get_lyrics(link):
     try:
         if '/song/' in link:
             link = link.replace("/song/", '/lyrics/')
-            link_=link.split('/')
-            link_[-2]=link_[-2]+'-lyrics'
-            link='/'.join(link_)
+            link_ = link.split('/')
+            link_[-2] = link_[-2]+'-lyrics'
+            link = '/'.join(link_)
             source = requests.get(link).text
             soup = BeautifulSoup(source, 'lxml')
             res = soup.find(class_='u-disable-select')
