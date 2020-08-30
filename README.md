@@ -12,8 +12,8 @@
 ###### **NOTE:** You don't need to have JioSaavn link of the song in order to fetch the song details, you can directly search songs by their name. Fetching Songs/Albums/Playlists from URL is also supported in this API.  
 
  ---
-  
-#### Features:
+
+### **Features**:
 ##### Currently the API can get the following details for a specific song in JSON format:
 - **Song Name**
 - **Singer Name**
@@ -62,7 +62,7 @@
   }
 ```
 
-#### Installation:
+### **Installation**:
 
 Clone this repository using
 ```sh
@@ -78,24 +78,66 @@ $ python3 app.py
 ```
 Navigate to 127.0.0.1:5000 to see the Homepage
 
-#### Usage:
+### **Usage**:
 Fetching lyrics is optional and is triggered only when it is passed as an argument in the GET Request. (**&lyrics=true**)
 **If you enable lyrics search, it will take more time to fetch results**
 
-```shSong Title
+---
+##### **Universal Endpoint**: (Supports Song Name, Song Link, Album Link, Playlist Link)
+```sh
 http://127.0.0.1:5000/result/?query=<insert-jiosaavn-link-or-query-here>&lyrics=true
 ```
-**Example:** Navigate to http://127.0.0.1:5000/result/?query=https://www.jiosaavn.com/song/tum-hi-aana-from-marjaavaan/NCw-YiNJYms to get a json response of song data in return.
+**Example:** Navigate to http://127.0.0.1:5000/result/?query=alone to get a JSON response of songs data in return.
 
-### You can fork the repo and deploy on VPS or deploy it on Heroku :)  
+----
+
+
+##### **Song URL Endpoint**:
+```sh
+http://127.0.0.1:5000/song/?query=<insert-jiosaavn-song-link>&lyrics=true
+```
+**Example:** Navigate to http://127.0.0.1:5000/result/?query=https://www.jiosaavn.com/song/khairiyat/PwAFSRNpAWw to get a JSON response of song data in return.
+
+---
+
+##### **Playlist URL Endpoint**:
+```sh
+http://127.0.0.1:5000/playlist/?query=<insert-jiosaavn-playlist-link>&lyrics=true
+```
+**Example:** Navigate to http://127.0.0.1:5000/result/?query=https://www.jiosaavn.com/featured/romantic-hits-2020---hindi/ABiMGqjovSFuOxiEGmm6lQ__ to get a JSON response of playlist data in return.
+
+---
+
+##### **Album URL Endpoint**:
+```sh
+http://127.0.0.1:5000/album/?query=<insert-jiosaavn-album-link>&lyrics=true
+```
+**Example:** Navigate to http://127.0.0.1:5000/result/?query=https://www.jiosaavn.com/album/chhichhore/V4F3M5,cNb4_ to get a JSON response of album data in return.
+
+---
+
+##### **Lyrics Endpoint**:
+```sh
+http://127.0.0.1:5000/lyrics/?query=<insert-jiosaavn-song-link-or-song-id>&lyrics=true
+```
+**Example:** Navigate to http://127.0.0.1:5000/lyrics/?query=https://www.jiosaavn.com/song/khairiyat/PwAFSRNpAWw to get a JSON response of album data in return.
+
+---
+
+#### You can fork the repo and deploy on VPS or deploy it on Heroku :)  
+
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/cyberboysumanjay/JioSaavnAPI/tree/master)
 
-**Note:** Heroku gives US/Europe servers which won't be able to fetch all songs flawlessly. Use any Indian VPS for fetching accurate results.
-## Made using this API :heart:
-##### [Musify](https://kutt.it/songdlapp) - Android App
-##### [@songdl_bot](https://t.me/songdl_bot) - Song Downloader Bot on Telegram
-##### [Site[Beta]](https://jiosaavn.netlify.app/) - Website made by [Praveen Bhadoo](https://github.com/ParveenBhadooOfficial)
+**Note:** Heroku gives US/Europe servers which won't be able to fetch all songs flawlessly. Use any Indian VPS for accurate results.
+
+---
+
+## **Made using this API** :heart:
+#### [Musify](https://github.com/Harsh-23/Musify/releases) - Android App
+#### [@songdl_bot](https://telegram.dog/songdl_bot) - Song Downloader Bot on Telegram
+#### [Jio-Saavn-Downloader [Beta]](https://jiosaavn.netlify.app/) - [Open Sourced](https://github.com/ParveenBhadooOfficial/Jio-Saavn-Downloader) website made by [Praveen Bhadoo](https://github.com/ParveenBhadooOfficial)
+#### [Musicder](https://musicder.tk/) - [Open Sourced](https://github.com/cachecleanerjeet/Musicder) website made by [Tuhin Pal](https://github.com/cachecleanerjeet)
 
 #### Star the Repo in case you liked it :)
 
-# © [Sumanjay](https://cyberboysumanjay.github.io)
+### © [Sumanjay](https://cyberboysumanjay.github.io)
