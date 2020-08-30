@@ -38,8 +38,8 @@ def playlist():
     if lyrics_ and lyrics_.lower()!='false':
         lyrics = True
     if query:
-        id = jiosaavn.getListId(query)
-        songs = jiosaavn.getPlayList(id,lyrics)
+        id = jiosaavn.get_playlist_id(query)
+        songs = jiosaavn.get_playlist(id,lyrics)
         return jsonify(songs)
     else:
         error = {
@@ -56,8 +56,8 @@ def album():
     if lyrics_ and lyrics_.lower()!='false':
         lyrics = True
     if query:
-        id = jiosaavn.AlbumId(query)
-        songs = jiosaavn.getAlbum(id,lyrics)
+        id = jiosaavn.get_album_id(query)
+        songs = jiosaavn.get_album(id,lyrics)
         return jsonify(songs)
     else:
         error = {
@@ -117,14 +117,14 @@ def result():
 
         elif '/album/' in query:
             print("Album")
-            id = jiosaavn.AlbumId(query)
-            songs = jiosaavn.getAlbum(id,lyrics)
+            id = jiosaavn.get_album_id(query)
+            songs = jiosaavn.get_album(id,lyrics)
             return jsonify(songs)
 
         elif '/playlist/' or '/featured/' in query:
             print("Playlist")
-            id = jiosaavn.getListId(query)
-            songs = jiosaavn.getPlayList(id,lyrics)
+            id = jiosaavn.get_playlist_id(query)
+            songs = jiosaavn.get_playlist(id,lyrics)
             return jsonify(songs)
 
     except Exception as e:
