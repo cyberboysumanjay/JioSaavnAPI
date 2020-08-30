@@ -1,12 +1,13 @@
 {
-  "name": "JioSaavnAPI",
-  "description": "Unofficial API of JioSaavn.",
-  "keywords": [
-    "flask",
-    "python",
-    "saavn",
-    "jiosaavn",
-    "music"
-  ],
-  "repository": "https://github.com/cyberboysumanjay/JioSaavnAPI"
+    "name": "JioSaavnAPI",
+    "description": "Unofficial API of JioSaavn.",
+    "author": "Sumanjay",
+    "keywords": [
+        "flask",
+        "python",
+        "saavn",
+        "jiosaavn",
+        "music"
+    ],
+    "repository": "https://github.com/cyberboysumanjay/JioSaavnAPI"
 }

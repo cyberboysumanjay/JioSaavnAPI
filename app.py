@@ -1,12 +1,13 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify, json
 import time
-from flask import jsonify, json
 import saavn
+import jiosaavn
+import os
 from traceback import print_exc
 from flask_cors import CORS
 
 app = Flask(__name__)
-app.secret_key = 'thankyoutonystark#weloveyou3000'
+app.secret_key = os.environ.get("SECRET",'thankyoutonystark#weloveyou3000')
 CORS(app)
 
 
@@ -14,8 +15,89 @@ CORS(app)
 def home():
     return redirect("https://cyberboysumanjay.github.io/JioSaavnAPI/")
 
+@app.route('/song/')
+def search():
+    lyrics = False
+    query = request.args.get('query')
+    lyrics_ = request.args.get('lyrics')
+    if lyrics_ and lyrics_.lower()!='false':
+        lyrics = True
+    if query:
+        return jsonify(jiosaavn.search_for_song(query,lyrics))
+    else:
+        error = {
+            "status": False,
+            "error":'Query is required to search songs!'
+        }
+        return jsonify(error)
 
-@app.route('/result/', methods=['GET', 'POST'])
+@app.route('/playlist/')
+def playlist():
+    lyrics = False
+    query = request.args.get('query')
+    lyrics_ = request.args.get('lyrics')
+    if lyrics_ and lyrics_.lower()!='false':
+        lyrics = True
+    if query:
+        id = jiosaavn.getListId(query)
+        songs = jiosaavn.getPlayList(id,lyrics)
+        return jsonify(songs)
+    else:
+        error = {
+            "status": False,
+            "error":'Query is required to search playlists!'
+        }
+        return jsonify(error)
+
+@app.route('/album/')
+def album():
+    lyrics = False
+    query = request.args.get('query')
+    lyrics_ = request.args.get('lyrics')
+    if lyrics_ and lyrics_.lower()!='false':
+        lyrics = True
+    if query:
+        id = jiosaavn.AlbumId(query)
+        songs = jiosaavn.getAlbum(id,lyrics)
+        return jsonify(songs)
+    else:
+        error = {
+            "status": False,
+            "error":'Query is required to search albums!'
+        }
+        return jsonify(error)
+
+@app.route('/lyrics/')
+def lyrics():
+    query = request.args.get('query')
+
+    if query:
+        try:
+            if 'http' in query and 'saavn' in query:
+                id = jiosaavn.get_song_id(query)
+                lyrics = jiosaavn.get_lyrics(id)
+            else:
+                lyrics = jiosaavn.get_lyrics(query)
+            response = {}
+            response['status'] = True
+            response['lyrics'] = lyrics
+            return jsonify(response)
+        except Exception as e:
+            error = {
+            "status": False,
+            "error": str(e)
+            }
+            return jsonify(error)
+        
+    else:
+        error = {
+            "status": False,
+            "error":'Query containing song link or id is required to fetch lyrics!'
+        }
+        return jsonify(error)
+
+
+@app.route('/result/')
 def result():
     lyrics = False
     false = False
@@ -26,59 +108,26 @@ def result():
         lyrics = True
 
     if 'saavn' not in query:
-        return jsonify(saavn.search_from_query(query))
-    print("Checking Lyrics Tag:",lyrics)
+        return jsonify(jiosaavn.search_for_song(query,lyrics))
     try:
         if '/song/' in query:
             print("Song")
-            song = saavn.get_song_id(query)
-            song = (saavn.search_from_song_id(song))
-            if lyrics:
-                if song['has_lyrics']:
-                    song['lyrics'] = saavn.get_lyrics(song['perma_url'])
-                else:
-                    song['lyrics'] = None
-            song['status'] = True
-            song['media_url'] = saavn.check_media_url(song['media_url'])
+            song_id = jiosaavn.get_song_id(query)
+            song = jiosaavn.get_song(song_id,lyrics)
             return jsonify(song)
-            '''
-            elif '/search/' in query:
-                songs = saavn.get_songs(query)
-                for song in songs:
-                    song['image_url'] = saavn.fix_image_url(song['image_url'])
-                    song['title'] = saavn.fix_title(song['title'])
-                    song['url'] = saavn.decrypt_url(song['url'])
-                    song['album'] = saavn.fix_title(song['album'])
-                    if lyrics:
-                        song['lyrics'] = saavn.get_lyrics(song['tiny_url'])
-                return jsonify(songs)
-            '''
+
         elif '/album/' in query:
             print("Album")
-            id = saavn.AlbumId(query)
-            songs = saavn.getAlbum(id)
-            for song in songs['songs']:
-                song['media_url'] = saavn.check_media_url(song['media_url'])
-                if lyrics:
-                    if song['has_lyrics']:
-                        song['lyrics'] = saavn.get_lyrics(song['perma_url'])
-                    else:
-                        song['lyrics'] = None
-            songs['status'] = True
+            id = jiosaavn.AlbumId(query)
+            songs = jiosaavn.getAlbum(id,lyrics)
             return jsonify(songs)
+
         elif '/playlist/' or '/featured/' in query:
             print("Playlist")
-            id = saavn.getListId(query)
-            songs = saavn.getPlayList(id)
-            for song in songs['songs']:
-                song['media_url'] = saavn.check_media_url(song['media_url'])
-                if lyrics:
-                    if song['has_lyrics']:
-                        song['lyrics'] = saavn.get_lyrics(song['perma_url'])
-                    else:
-                        song['lyrics'] = None
-            songs['status'] = True
+            id = jiosaavn.getListId(query)
+            songs = jiosaavn.getPlayList(id,lyrics)
             return jsonify(songs)
+
     except Exception as e:
         print_exc()
         error = {

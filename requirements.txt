@@ -1,11 +1,5 @@
 Flask
 gunicorn
-httplib2
 requests
-clint
-pycryptodome
-requests-toolbelt
 pyDes
-bs4
-lxml
 flask-cors
