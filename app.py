@@ -1,6 +1,5 @@
-from flask import Flask, render_template, request, redirect, jsonify, json
+from flask import Flask, request, redirect, jsonify, json
 import time
-import saavn
 import jiosaavn
 import os
 from traceback import print_exc
