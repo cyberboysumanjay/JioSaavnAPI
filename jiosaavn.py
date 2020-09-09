@@ -28,7 +28,10 @@ def get_song(id,lyrics):
 
 def get_song_id(url):
     res = requests.get(url, data=[('bitrate', '320')])
-    return res.text.split('"song":{"type":"')[1].split('","image":')[0].split('"id":"')[-1]
+    try:
+        return res.text.split('"song":{"type":"')[1].split('","image":')[0].split('"id":"')[-1]
+    except IndexError:
+        return(res.text.split('"pid":"'))[1].split('","')[0]
 
 def get_album(album_id,lyrics):
     songs_json = []
@@ -44,7 +47,10 @@ def get_album(album_id,lyrics):
 
 def get_album_id(input_url):
     res = requests.get(input_url)
-    return res.text.split('"album_id":"')[1].split('"')[0]
+    try:
+        return res.text.split('"album_id":"')[1].split('"')[0]
+    except IndexError:
+        return res.text.split('"page_id","')[1].split('","')[0]
 
 def get_playlist(listId,lyrics):
     try:
@@ -60,7 +66,11 @@ def get_playlist(listId,lyrics):
 
 def get_playlist_id(input_url):
     res = requests.get(input_url).text
-    return res.split('"type":"playlist","id":"')[1].split('"')[0]
+    try:
+        return res.split('"type":"playlist","id":"')[1].split('"')[0]
+    except IndexError:
+        return res.split('"page_id","')[1].split('","')[0]
+
 
 def get_lyrics(id):
     url = endpoints.lyrics_base_url+id
