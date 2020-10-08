@@ -2,7 +2,7 @@ import requests
 import endpoints
 import helper
 import json
-
+from traceback import print_exc
 
 def search_for_song(query,lyrics):
     search_base_url = endpoints.search_base_url+query
