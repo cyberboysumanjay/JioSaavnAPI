@@ -20,10 +20,7 @@ def search_for_song(query,lyrics):
     songs = []
     for song in song_response:
         id = song['id']
-        song_details_base_url = endpoints.song_details_base_url+id
-        song_response = requests.get(song_details_base_url).text.encode().decode('unicode-escape')
-        song_response = json.loads(song_response)
-        song_data = helper.format_song(song_response[id],lyrics)
+        song_data = get_song(id, lyrics)
         songs.append(song_data)
     return songs
 
