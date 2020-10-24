@@ -5,6 +5,14 @@ import json
 from traceback import print_exc
 
 def search_for_song(query,lyrics):
+    if query.startswith('http') and 'saavn.com' in query:
+        id = get_song_id(query)
+        song_details_base_url = endpoints.song_details_base_url+id
+        song_response = requests.get(song_details_base_url).text.encode().decode('unicode-escape')
+        song_response = json.loads(song_response)
+        song_data = helper.format_song(song_response[id],lyrics)
+        return song_data
+
     search_base_url = endpoints.search_base_url+query
     response = requests.get(search_base_url).text.encode().decode('unicode-escape')
     response = json.loads(response)
