@@ -82,6 +82,6 @@ def get_playlist_id(input_url):
 
 def get_lyrics(id):
     url = endpoints.lyrics_base_url+id
-    lyrics_json = requests.get(url).text.encode().decode('unicode-escape')
+    lyrics_json = requests.get(url).text
     lyrics_text = json.loads(lyrics_json)
     return lyrics_text['lyrics']
