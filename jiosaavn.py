@@ -8,7 +8,7 @@ def search_for_song(query,lyrics):
     if query.startswith('http') and 'saavn.com' in query:
         id = get_song_id(query)
         return get_song(id, lyrics)
-        
+
     search_base_url = endpoints.search_base_url+query
     response = requests.get(search_base_url).text.encode().decode('unicode-escape')
     response = json.loads(response)
@@ -22,11 +22,15 @@ def search_for_song(query,lyrics):
     return songs
 
 def get_song(id,lyrics):
-    song_details_base_url = endpoints.song_details_base_url+id
-    song_response = requests.get(song_details_base_url).text.encode().decode('unicode-escape')
-    song_response = json.loads(song_response)
-    song_data = helper.format_song(song_response[id],lyrics)
-    return song_data
+    try:
+        song_details_base_url = endpoints.song_details_base_url+id
+        song_response = requests.get(song_details_base_url).text.encode().decode('unicode-escape')
+        song_response = json.loads(song_response)
+        song_data = helper.format_song(song_response[id],lyrics)
+        if song_data:
+            return song_data
+    except:
+        return None
 
 def get_song_id(url):
     res = requests.get(url, data=[('bitrate', '320')])
