@@ -17,7 +17,8 @@ def search_for_song(query,lyrics):
     for song in song_response:
         id = song['id']
         song_data = get_song(id, lyrics)
-        songs.append(song_data)
+        if song_data:
+            songs.append(song_data)
     return songs
 
 def get_song(id,lyrics):
@@ -71,7 +72,6 @@ def get_playlist_id(input_url):
         return res.split('"type":"playlist","id":"')[1].split('"')[0]
     except IndexError:
         return res.split('"page_id","')[1].split('","')[0]
-
 
 def get_lyrics(id):
     url = endpoints.lyrics_base_url+id

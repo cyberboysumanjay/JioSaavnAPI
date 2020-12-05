@@ -99,8 +99,6 @@ def lyrics():
 @app.route('/result/')
 def result():
     lyrics = False
-    false = False
-    true = True
     query = request.args.get('query')
     lyrics_ = request.args.get('lyrics')
     if lyrics_ and lyrics_.lower()!='false':
