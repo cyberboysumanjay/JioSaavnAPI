@@ -137,7 +137,7 @@ http://127.0.0.1:5000/lyrics/?query=<insert-jiosaavn-song-link-or-song-id>&lyric
 #### [@songdl_bot](https://telegram.dog/songdl_bot) - Song Downloader Bot on Telegram
 #### [Jio-Saavn-Downloader [Beta]](https://jiosaavn.netlify.app/) - [Open Sourced](https://github.com/ParveenBhadooOfficial/Jio-Saavn-Downloader) website made by [Praveen Bhadoo](https://github.com/ParveenBhadooOfficial)
 #### [Musicder](https://musicder.tk/) - [Open Sourced](https://github.com/cachecleanerjeet/Musicder) website made by [Tuhin Pal](https://github.com/cachecleanerjeet)
-
+#### [Music_Downloader_CLI](https://github.com/thehamkercat/Music_Downloader_CLI) made by [TheHamkerCat](https://github.com/thehamkercat)
 #### Star the Repo in case you liked it :)
 
 ### © [Sumanjay](https://cyberboysumanjay.github.io)
