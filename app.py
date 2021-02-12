@@ -1,5 +1,7 @@
 from flask import Flask, request, redirect, jsonify, json
 import time
+
+import requests
 import jiosaavn
 import os
 from traceback import print_exc
@@ -31,6 +33,30 @@ def search():
         error = {
             "status": False,
             "error":'Query is required to search songs!'
+        }
+        return jsonify(error)
+
+@app.route('/song/get/')
+def get_song():
+    lyrics = False
+    id = request.args.get('id')
+    lyrics_ = request.args.get('lyrics')
+    if lyrics_ and lyrics_.lower()!='false':
+        lyrics = True
+    if id:
+        resp = jiosaavn.get_song(id,lyrics)
+        if not resp:
+            error = {
+                "status": False,
+                "error": 'Invalid Song ID received!'
+            }
+            return jsonify(error)
+        else:
+            return jsonify(resp)
+    else:
+        error = {
+            "status": False,
+            "error": 'Song ID is required to get a song!'
         }
         return jsonify(error)
 
