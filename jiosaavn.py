@@ -4,7 +4,7 @@ import helper
 import json
 from traceback import print_exc
 
-def search_for_song(query,lyrics):
+def search_for_song(query,lyrics,songdata):
     if query.startswith('http') and 'saavn.com' in query:
         id = get_song_id(query)
         return get_song(id, lyrics)
@@ -13,6 +13,8 @@ def search_for_song(query,lyrics):
     response = requests.get(search_base_url).text.encode().decode('unicode-escape')
     response = json.loads(response)
     song_response = response['songs']['data']
+    if not songdata:
+        return song_response
     songs = []
     for song in song_response:
         id = song['id']

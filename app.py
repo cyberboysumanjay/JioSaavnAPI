@@ -17,12 +17,16 @@ def home():
 @app.route('/song/')
 def search():
     lyrics = False
+    songdata = True
     query = request.args.get('query')
     lyrics_ = request.args.get('lyrics')
+    songdata_ = request.args.get('songdata')
     if lyrics_ and lyrics_.lower()!='false':
         lyrics = True
+    if songdata_ and songdata_.lower()!='true':
+        songdata = False
     if query:
-        return jsonify(jiosaavn.search_for_song(query,lyrics))
+        return jsonify(jiosaavn.search_for_song(query, lyrics, songdata))
     else:
         error = {
             "status": False,
