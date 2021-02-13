@@ -1,7 +1,5 @@
 from flask import Flask, request, redirect, jsonify, json
 import time
-
-import requests
 import jiosaavn
 import os
 from traceback import print_exc
