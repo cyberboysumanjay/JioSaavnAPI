@@ -133,7 +133,7 @@ def result():
         lyrics = True
 
     if 'saavn' not in query:
-        return jsonify(jiosaavn.search_for_song(query,lyrics))
+        return jsonify(jiosaavn.search_for_song(query,lyrics,True))
     try:
         if '/song/' in query:
             print("Song")
