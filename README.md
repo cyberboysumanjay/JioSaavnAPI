@@ -120,7 +120,7 @@ http://127.0.0.1:5000/album/?query=<insert-jiosaavn-album-link>&lyrics=true
 ```sh
 http://127.0.0.1:5000/lyrics/?query=<insert-jiosaavn-song-link-or-song-id>&lyrics=true
 ```
-**Example:** Navigate to http://127.0.0.1:5000/lyrics/?query=https://www.jiosaavn.com/song/khairiyat/PwAFSRNpAWw to get a JSON response of album data in return.
+**Example:** Navigate to http://127.0.0.1:5000/lyrics/?query=https://www.jiosaavn.com/song/khairiyat/PwAFSRNpAWw to get a JSON response of lyrics data in return.
 
 ---
 
