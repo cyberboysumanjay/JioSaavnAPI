@@ -1,1 +1,1 @@
-web: gunicorn app:app --timeout 100 --log-file=-
+web: gunicorn --worker-tmp-dir /dev/shm --config gunicorn_config.py app:app
