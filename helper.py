@@ -53,7 +53,7 @@ def format_playlist(data,lyrics):
     return data
 
 def format(string):
-    return string.encode().decode('unicode-escape').replace("&quot;","'").replace("&amp;", "&").replace("&#039;", "'")
+    return string.encode().decode().replace("&quot;","'").replace("&amp;", "&").replace("&#039;", "'")
 
 def decrypt_url(url):
     des_cipher = des(b"38346591", ECB, b"\0\0\0\0\0\0\0\0",pad=None, padmode=PAD_PKCS5)
