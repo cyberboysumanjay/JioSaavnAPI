@@ -3,6 +3,7 @@ import endpoints
 import helper
 import json
 from traceback import print_exc
+import re
 
 
 def search_for_song(query, lyrics, songdata):
@@ -11,9 +12,9 @@ def search_for_song(query, lyrics, songdata):
         return get_song(id, lyrics)
 
     search_base_url = endpoints.search_base_url+query
-    response = requests.get(
-        search_base_url).text.encode().decode('unicode-escape')
-    response = json.loads(response)
+    response = requests.get(search_base_url).text.encode().decode('unicode-escape')
+    pattern = r'\(From "([^"]+)"\)'
+    response = json.loads(re.sub(pattern, r"(From '\1')", response))
     song_response = response['songs']['data']
     if not songdata:
         return song_response
