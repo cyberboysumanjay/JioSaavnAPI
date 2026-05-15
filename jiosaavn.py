@@ -4,6 +4,49 @@ import helper
 import json
 from traceback import print_exc
 import re
+import os
+
+def format_duration(duration_seconds):
+    if not duration_seconds:
+        return "0:00"
+    try:
+        total_seconds = int(duration_seconds)
+        minutes = total_seconds // 60
+        seconds = total_seconds % 60
+        return f"{minutes}:{seconds:02d}"
+    except:
+        return "0:00"
+
+def map_jiosaavn_to_song(track):
+    image = track.get('image') or track.get('image_url') or ""
+    if image and not image.startswith('http'):
+        image = f"https://c.saavncdn.com/{image.lstrip('/')}"
+    if not image:
+        image = "https://via.placeholder.com/500"
+        
+    if isinstance(image, str):
+        image = image.replace('150x150', '500x500').replace('50x50', '500x500')
+    
+    media_url = track.get('media_url') or track.get('url') or track.get('preview_url') or ""
+    if media_url and not media_url.startswith('http'):
+        media_url = f"https://aac.saavncdn.com/{media_url.lstrip('/')}"
+    
+    # Route through proxy if it's a saavncdn link to bypass CORS/Mixed Content
+    if media_url and 'saavncdn.com' in media_url:
+        if not media_url.startswith('/api/audio-proxy'):
+            media_url = f"/api/audio-proxy?url={media_url}"
+
+    return {
+        "id": str(track.get('id', 'unknown')),
+        "title": track.get('song') or track.get('title') or 'Unknown',
+        "artist": track.get('singers') or track.get('primary_artists') or 'Unknown Artist',
+        "album": track.get('album') or 'Unknown Album',
+        "duration": format_duration(track.get('duration')),
+        "coverUrl": image,
+        "preview": media_url,
+        "isFavorite": False,
+        "source": "jiosaavn"
+    }
 
 
 def search_for_song(query, lyrics, songdata):
@@ -17,13 +60,13 @@ def search_for_song(query, lyrics, songdata):
     response = json.loads(re.sub(pattern, r"(From '\1')", response))
     song_response = response['songs']['data']
     if not songdata:
-        return song_response
+        return [map_jiosaavn_to_song(s) for s in song_response]
     songs = []
     for song in song_response:
         id = song['id']
         song_data = get_song(id, lyrics)
         if song_data:
-            songs.append(song_data)
+            songs.append(map_jiosaavn_to_song(song_data))
     return songs
 
 
