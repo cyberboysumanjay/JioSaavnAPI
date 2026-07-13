@@ -6,24 +6,43 @@ from traceback import print_exc
 import re
 
 
-def search_for_song(query, lyrics, songdata):
+def search_for_song(query, lyrics, songdata, count=15):
     if query.startswith('http') and 'saavn.com' in query:
         id = get_song_id(query)
         return get_song(id, lyrics)
 
-    search_base_url = endpoints.search_base_url+query
-    response = requests.get(search_base_url).text.encode().decode('unicode-escape')
+    if not songdata:
+        # Unchanged legacy path: the lightweight autocomplete shape, no
+        # media URLs, no per-song detail calls.
+        search_base_url = endpoints.search_base_url+query
+        response = requests.get(search_base_url).text.encode().decode('unicode-escape')
+        pattern = r'\(From "([^"]+)"\)'
+        response = json.loads(re.sub(pattern, r"(From '\1')", response))
+        return response['songs']['data']
+
+    # search.getResults (the real search API, not autocomplete.get) already
+    # includes encrypted_media_url/media_preview_url/duration/etc for every
+    # result in this ONE response — the old code instead called get_song()
+    # again per result (an extra sequential HTTP round-trip to JioSaavn EACH,
+    # on top of this same search request), which is what made a single
+    # search take 6+ round-trips and multiple seconds. format_song() only
+    # ever needs the fields already present here.
+    search_v2_url = endpoints.search_v2_base_url + query + f"&p=1&n={count}"
+    response = requests.get(search_v2_url).text.encode().decode('unicode-escape')
     pattern = r'\(From "([^"]+)"\)'
     response = json.loads(re.sub(pattern, r"(From '\1')", response))
-    song_response = response['songs']['data']
-    if not songdata:
-        return song_response
+    results = response.get('results', [])
+
     songs = []
-    for song in song_response:
-        id = song['id']
-        song_data = get_song(id, lyrics)
-        if song_data:
-            songs.append(song_data)
+    for song in results:
+        try:
+            song_data = helper.format_song(song, lyrics)
+            if song_data:
+                songs.append(song_data)
+        except (KeyError, TypeError):
+            # One malformed result (JioSaavn's private API is undocumented
+            # and inconsistent) shouldn't drop the rest of the search.
+            continue
     return songs
 
 

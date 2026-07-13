@@ -11,7 +11,7 @@ def format_song(data, lyrics):
                 "_320.mp4", "_160.mp4")
         data['media_preview_url'] = data['media_url'].replace(
             "_320.mp4", "_96_p.mp4").replace("_160.mp4", "_96_p.mp4").replace("//aac.", "//preview.")
-    except KeyError or TypeError:
+    except (KeyError, TypeError):
         url = data['media_preview_url']
         url = url.replace("preview", "aac")
         if data['320kbps'] == "true":
